@@ -1,7 +1,6 @@
-class Customer:
+class Coffee:
     def __init__(self, name):
-        self._set_name(name)
-        self._orders = []
+        self.name = name
 
     @property
     def name(self):
@@ -9,23 +8,22 @@ class Customer:
 
     @name.setter
     def name(self, value):
-        self._set_name(value)
-
-    def _set_name(self, value):
-        if not isinstance(value, str) or len(value) < 1 or len(value) > 15:
-            raise ValueError("Name must be a string between 1 and 15 characters.")
+        if not isinstance(value, str) or len(value) < 3:
+            raise TypeError("Enter a valid coffee name")
         self._name = value
 
     def orders(self):
-        """Returns a list of all orders for this customer."""
-        return self._orders
+        return [order for order in Order.all_coffees if order.coffee == self]
 
-    def coffees(self):
-        """Returns a unique list of all coffees ordered by this customer."""
-        return list({order.coffee for order in self._orders})
+    def customers(self):
+        return list(
+            {order.customer for order in Order.all_coffees if order.coffee == self}
+        )
 
-    def create_order(self, coffee, price):
-        """Creates and returns a new order instance for this customer."""
-        order = Order(self, coffee, price)
-        self._orders.append(order)
-        return order
+    def num_orders(self):
+        return len(self.orders())
+
+    def average_price(self):
+        return sum([order.price for order in self.orders()]) / len(self.orders())
+        
+    
